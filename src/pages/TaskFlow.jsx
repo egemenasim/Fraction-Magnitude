@@ -6,17 +6,18 @@ import NumberLine from '../components/NumberLine';
 // Define the steps.
 const STEPS = [
     { type: 'transition', title: 'Alıştırma Görevi', description: 'Bu bir deneme görevi. Süre veya puanlamaya dahil edilmeyecek.' },
-    { type: 'task', id: 'practice', opText: '1/2 + 3/5', isPractice: true },
+    { type: 'task', id: 'practice', imgSrc: '/practice.png', opText: '1/2 + 3/5', isPractice: true },
     { type: 'transition', title: 'Görev 1', description: 'Şimdi asıl görev başlıyor. Süre ölçümü aktiftir.' },
-    { type: 'task', id: 'task1', opText: '19/35 + 41/66' },
+    { type: 'task', id: 'task1', imgSrc: '/task1.png', opText: '19/35 + 41/66' },
     { type: 'transition', title: 'Görev 2', description: 'Sıradaki göreve geçiyorsunuz.' },
-    { type: 'task', id: 'task2', opText: '19/35 - 41/66' },
+    { type: 'task', id: 'task2', imgSrc: '/task2.png', opText: '19/35 - 41/66' },
     { type: 'transition', title: 'Görev 3', description: 'Sıradaki göreve geçiyorsunuz.' },
-    { type: 'task', id: 'task3', opText: '19/35 x 41/66' },
+    { type: 'task', id: 'task3', imgSrc: '/task3.png', opText: '19/35 x 41/66' },
     { type: 'transition', title: 'Görev 4', description: 'Son göreve geçiyorsunuz.' },
-    { type: 'task', id: 'task4', opText: '41/66 / 19/35' },
+    { type: 'task', id: 'task4', imgSrc: '/task4.png', opText: '41/66 / 19/35' },
     { type: 'complete' }
 ];
+
 
 export default function TaskFlow() {
     const navigate = useNavigate();
@@ -128,7 +129,11 @@ export default function TaskFlow() {
                 <div className="task-header">
                     {step.isPractice && <h2>GÖREV DEMOSU</h2>}
                     <div className="task-operation">
-                        {step.opText}
+                        <img
+                            src={step.imgSrc}
+                            alt={step.opText}
+                            style={{ maxHeight: '200px', maxWidth: '100%', objectFit: 'contain' }}
+                        />
                     </div>
                 </div>
 
