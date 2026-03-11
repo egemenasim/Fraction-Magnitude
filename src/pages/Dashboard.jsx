@@ -1,19 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const [sessions, setSessions] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     // Authentication state
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [passwordInput, setPasswordInput] = useState('');
     const [error, setError] = useState('');
 
+    const fetchSessions = async () => {
+        setLoading(true);
+        const { data, error } = await supabase
+            .from('sessions')
+            .select('*')
+            .order('olusturma_tarihi', { ascending: false });
+
+        if (!error && data) {
+            setSessions(data);
+        }
+        setLoading(false);
+    };
+
     useEffect(() => {
-        const data = JSON.parse(localStorage.getItem('fraction-magazine-sessions') || '[]');
-        setSessions(data);
-    }, []);
+        if (isAuthenticated) {
+            fetchSessions();
+        }
+    }, [isAuthenticated]);
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -25,9 +41,9 @@ export default function Dashboard() {
         }
     };
 
-    const handleClear = () => {
+    const handleClear = async () => {
         if (window.confirm("Bütün verileri silmek istediğinize emin misiniz?")) {
-            localStorage.removeItem('fraction-magazine-sessions');
+            await supabase.from('sessions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
             setSessions([]);
         }
     };
@@ -44,24 +60,23 @@ export default function Dashboard() {
             "Tarih"
         ];
 
-        // Use semicolon delimiter which is standard for Excel in Turkish localization
+        // Use semicolon delimiter + BOM for Turkish Excel
         let csvContent = "data:text/csv;charset=utf-8,\uFEFF" + headers.join(";") + "\n";
 
         sessions.forEach(session => {
-            const g1 = session.results.find(r => r.taskId === 'task1') || {};
-            const g2 = session.results.find(r => r.taskId === 'task2') || {};
-            const g3 = session.results.find(r => r.taskId === 'task3') || {};
-            const g4 = session.results.find(r => r.taskId === 'task4') || {};
-
             const row = [
-                `"${session.user.isimSoyisim}"`,
-                `"${session.user.programAdi}"`,
-                `"${session.user.gozlukKullanimi}"`,
-                g1.answer?.toFixed(4) || "", g1.timeMs?.toFixed(2) || "",
-                g2.answer?.toFixed(4) || "", g2.timeMs?.toFixed(2) || "",
-                g3.answer?.toFixed(4) || "", g3.timeMs?.toFixed(2) || "",
-                g4.answer?.toFixed(4) || "", g4.timeMs?.toFixed(2) || "",
-                `"${new Date(session.date).toLocaleString()}"`
+                `"${session.isim_soyisim}"`,
+                `"${session.program_adi}"`,
+                `"${session.gozluk_kullanimi}"`,
+                session.g1_cevap?.toFixed(4) || "",
+                session.g1_sure?.toFixed(2) || "",
+                session.g2_cevap?.toFixed(4) || "",
+                session.g2_sure?.toFixed(2) || "",
+                session.g3_cevap?.toFixed(4) || "",
+                session.g3_sure?.toFixed(2) || "",
+                session.g4_cevap?.toFixed(4) || "",
+                session.g4_sure?.toFixed(2) || "",
+                `"${new Date(session.olusturma_tarihi).toLocaleString()}"`
             ];
 
             csvContent += row.join(";") + "\n";
@@ -120,7 +135,9 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {sessions.length === 0 ? (
+                {loading ? (
+                    <div className="empty-state"><p>Yükleniyor...</p></div>
+                ) : sessions.length === 0 ? (
                     <div className="empty-state">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '1rem', opacity: 0.5 }}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
                         <h3>Henüz Veri Yok</h3>
@@ -142,31 +159,26 @@ export default function Dashboard() {
                                     <th>G3 Süre (ms)</th>
                                     <th>G4 Cevap</th>
                                     <th>G4 Süre (ms)</th>
+                                    <th>Tarih</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {sessions.map((session, index) => {
-                                    const g1 = session.results.find(r => r.taskId === 'task1') || {};
-                                    const g2 = session.results.find(r => r.taskId === 'task2') || {};
-                                    const g3 = session.results.find(r => r.taskId === 'task3') || {};
-                                    const g4 = session.results.find(r => r.taskId === 'task4') || {};
-
-                                    return (
-                                        <tr key={index}>
-                                            <td>{session.user.isimSoyisim}</td>
-                                            <td>{session.user.programAdi}</td>
-                                            <td>{session.user.gozlukKullanimi}</td>
-                                            <td>{g1.answer?.toFixed(4)}</td>
-                                            <td style={{ color: '#000', fontWeight: 'bold' }}>{g1.timeMs?.toFixed(2)}</td>
-                                            <td>{g2.answer?.toFixed(4)}</td>
-                                            <td style={{ color: '#000', fontWeight: 'bold' }}>{g2.timeMs?.toFixed(2)}</td>
-                                            <td>{g3.answer?.toFixed(4)}</td>
-                                            <td style={{ color: '#000', fontWeight: 'bold' }}>{g3.timeMs?.toFixed(2)}</td>
-                                            <td>{g4.answer?.toFixed(4)}</td>
-                                            <td style={{ color: '#000', fontWeight: 'bold' }}>{g4.timeMs?.toFixed(2)}</td>
-                                        </tr>
-                                    );
-                                })}
+                                {sessions.map((session) => (
+                                    <tr key={session.id}>
+                                        <td>{session.isim_soyisim}</td>
+                                        <td>{session.program_adi}</td>
+                                        <td>{session.gozluk_kullanimi}</td>
+                                        <td>{session.g1_cevap?.toFixed(4)}</td>
+                                        <td style={{ fontWeight: 'bold' }}>{session.g1_sure?.toFixed(2)}</td>
+                                        <td>{session.g2_cevap?.toFixed(4)}</td>
+                                        <td style={{ fontWeight: 'bold' }}>{session.g2_sure?.toFixed(2)}</td>
+                                        <td>{session.g3_cevap?.toFixed(4)}</td>
+                                        <td style={{ fontWeight: 'bold' }}>{session.g3_sure?.toFixed(2)}</td>
+                                        <td>{session.g4_cevap?.toFixed(4)}</td>
+                                        <td style={{ fontWeight: 'bold' }}>{session.g4_sure?.toFixed(2)}</td>
+                                        <td>{new Date(session.olusturma_tarihi).toLocaleString('tr-TR')}</td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>

@@ -45,6 +45,8 @@ export default function TaskFlow() {
 
     if (!step) return null;
 
+    const [localResults, setLocalResults] = useState([]);
+
     const handleNextTransition = () => {
         setCurrentStepIndex(i => i + 1);
     };
@@ -52,23 +54,26 @@ export default function TaskFlow() {
     const handleNextTask = () => {
         if (currentValue === null) return;
 
+        let updatedResults = localResults;
         if (!step.isPractice) {
             const endTime = performance.now();
             const timeMs = endTime - startTime;
-
-            saveTaskResult({
+            const newResult = {
                 taskId: step.id,
                 operation: step.opText,
                 answer: currentValue,
                 timeMs: timeMs
-            });
+            };
+            updatedResults = [...localResults, newResult];
+            setLocalResults(updatedResults);
+            saveTaskResult(newResult);
         }
 
         setCurrentStepIndex(i => i + 1);
     };
 
-    const handleFinish = () => {
-        finalizeSession();
+    const handleFinish = async () => {
+        await finalizeSession(localResults);
         navigate('/');
     };
 
