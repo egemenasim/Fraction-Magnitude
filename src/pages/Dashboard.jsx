@@ -44,7 +44,8 @@ export default function Dashboard() {
             "Tarih"
         ];
 
-        let csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n";
+        // Add BOM \uFEFF for Excel to recognize UTF-8 encoding correctly
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF" + headers.join(",") + "\n";
 
         sessions.forEach(session => {
             const g1 = session.results.find(r => r.taskId === 'task1') || {};
