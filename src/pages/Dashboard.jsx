@@ -44,8 +44,8 @@ export default function Dashboard() {
             "Tarih"
         ];
 
-        // Add BOM \uFEFF for Excel to recognize UTF-8 encoding correctly
-        let csvContent = "data:text/csv;charset=utf-8,\uFEFF" + headers.join(",") + "\n";
+        // Use semicolon delimiter which is standard for Excel in Turkish localization
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF" + headers.join(";") + "\n";
 
         sessions.forEach(session => {
             const g1 = session.results.find(r => r.taskId === 'task1') || {};
@@ -64,7 +64,7 @@ export default function Dashboard() {
                 `"${new Date(session.date).toLocaleString()}"`
             ];
 
-            csvContent += row.join(",") + "\n";
+            csvContent += row.join(";") + "\n";
         });
 
         const encodedUri = encodeURI(csvContent);
