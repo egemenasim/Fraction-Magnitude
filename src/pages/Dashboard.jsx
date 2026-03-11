@@ -5,10 +5,25 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const [sessions, setSessions] = useState([]);
 
+    // Authentication state
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [error, setError] = useState('');
+
     useEffect(() => {
         const data = JSON.parse(localStorage.getItem('fraction-magazine-sessions') || '[]');
         setSessions(data);
     }, []);
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        if (passwordInput === 'yavuzberkegemen') {
+            setIsAuthenticated(true);
+            setError('');
+        } else {
+            setError('Hatalı şifre.');
+        }
+    };
 
     const handleClear = () => {
         if (window.confirm("Bütün verileri silmek istediğinize emin misiniz?")) {
@@ -59,6 +74,32 @@ export default function Dashboard() {
         link.click();
         document.body.removeChild(link);
     };
+
+    // If not authenticated, render the login form
+    if (!isAuthenticated) {
+        return (
+            <div className="page-container">
+                <div className="glass-panel" style={{ maxWidth: '400px', textAlign: 'center' }}>
+                    <h2>Yönetici Girişi</h2>
+                    <p className="subtitle" style={{ marginBottom: '1.5rem' }}>Tabloyu görüntülemek için şifre girin.</p>
+
+                    <form onSubmit={handleLogin}>
+                        <div className="form-group">
+                            <input
+                                type="password"
+                                placeholder="Şifre"
+                                value={passwordInput}
+                                onChange={(e) => setPasswordInput(e.target.value)}
+                                autoFocus
+                            />
+                            {error && <p style={{ color: 'var(--primary)', fontSize: '0.85rem', marginTop: '0.5rem', textAlign: 'left' }}>{error}</p>}
+                        </div>
+                        <button type="submit" className="btn">Giriş Yap</button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: '2rem' }}>
@@ -115,13 +156,13 @@ export default function Dashboard() {
                                             <td>{session.user.programAdi}</td>
                                             <td>{session.user.gozlukKullanimi}</td>
                                             <td>{g1.answer?.toFixed(4)}</td>
-                                            <td style={{ color: 'var(--primary)' }}>{g1.timeMs?.toFixed(2)}</td>
+                                            <td style={{ color: '#000', fontWeight: 'bold' }}>{g1.timeMs?.toFixed(2)}</td>
                                             <td>{g2.answer?.toFixed(4)}</td>
-                                            <td style={{ color: 'var(--primary)' }}>{g2.timeMs?.toFixed(2)}</td>
+                                            <td style={{ color: '#000', fontWeight: 'bold' }}>{g2.timeMs?.toFixed(2)}</td>
                                             <td>{g3.answer?.toFixed(4)}</td>
-                                            <td style={{ color: 'var(--primary)' }}>{g3.timeMs?.toFixed(2)}</td>
+                                            <td style={{ color: '#000', fontWeight: 'bold' }}>{g3.timeMs?.toFixed(2)}</td>
                                             <td>{g4.answer?.toFixed(4)}</td>
-                                            <td style={{ color: 'var(--primary)' }}>{g4.timeMs?.toFixed(2)}</td>
+                                            <td style={{ color: '#000', fontWeight: 'bold' }}>{g4.timeMs?.toFixed(2)}</td>
                                         </tr>
                                     );
                                 })}

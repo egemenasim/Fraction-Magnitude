@@ -1,15 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary: #EF4444; /* Clean red */
+  --primary: #EF4444;
+  /* Clean red */
   --primary-hover: #DC2626;
-  --bg-dark: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.7);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --bg-main: #ffffff;
+  --bg-card: #ffffff;
+  --text-main: #000000;
+  --text-muted: #4b5563;
+  --border: #e5e7eb;
 }
 
 * {
@@ -20,14 +19,11 @@
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-dark);
+  background-color: var(--bg-main);
   color: var(--text-main);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* Premium dark gradient background */
-  background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
-  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -37,14 +33,9 @@ body {
   flex-direction: column;
 }
 
-/* Glassmorphism Container */
+/* Flat Panel */
 .glass-panel {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 24px;
   padding: 2.5rem;
   width: 100%;
   max-width: 600px;
@@ -61,9 +52,7 @@ h1 {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-main);
   letter-spacing: -0.025em;
 }
 
@@ -92,38 +81,42 @@ label {
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  color: var(--text-muted);
+  color: var(--text-main);
 }
 
-input[type="text"], select {
+input[type="text"],
+input[type="password"],
+select {
   width: 100%;
   padding: 1rem 1.25rem;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   color: var(--text-main);
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.2s ease;
 }
 
-input[type="text"]:focus, select:focus {
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
-  background: rgba(15, 23, 42, 0.8);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  background: #ffffff;
 }
 
 select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234b5563' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 1em;
 }
 
 option {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-main);
   color: var(--text-main);
 }
 
@@ -140,12 +133,13 @@ option {
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: #f9fafb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
+  color: var(--text-muted);
 }
 
 .radio-card input {
@@ -154,17 +148,18 @@ option {
 }
 
 .radio-card:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: #f3f4f6;
 }
 
-.radio-card input:checked + span {
-  color: #fff;
+.radio-card input:checked+span {
+  color: var(--text-main);
+  font-weight: 600;
 }
 
 .radio-card:has(input:checked) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 20px rgba(255,255,255,0.05);
+  background: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 /* Buttons */
@@ -173,23 +168,22 @@ option {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: var(--text-main);
-  color: #000;
+  background: #000000;
+  color: #ffffff;
   font-weight: 600;
   font-size: 1rem;
   padding: 1rem 2rem;
-  border-radius: 12px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s ease;
   width: 100%;
   margin-top: 1rem;
 }
 
 .btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(255, 255, 255, 0.2);
-  background: #fff;
+  transform: translateY(-1px);
+  background: #1f2937;
 }
 
 .btn:active:not(:disabled) {
@@ -248,8 +242,9 @@ option {
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -261,17 +256,22 @@ option {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* Dashboard Table */
 .table-container {
   width: 100%;
   overflow-x: auto;
-  border-radius: 12px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid var(--border);
 }
 
 table {
@@ -281,7 +281,7 @@ table {
 }
 
 th {
-  background: rgba(0, 0, 0, 0.2);
+  background: #f9fafb;
   padding: 1rem;
   font-weight: 600;
   color: var(--text-muted);
@@ -289,17 +289,18 @@ th {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
+  border-bottom: 2px solid var(--border);
 }
 
 td {
   padding: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: #f9fafb;
 }
 
 .empty-state {

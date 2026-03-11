@@ -69,7 +69,7 @@ export default function TaskFlow() {
 
     const handleFinish = () => {
         finalizeSession();
-        navigate('/tablo');
+        navigate('/');
     };
 
     // --- Render logic based on step type ---
@@ -108,7 +108,7 @@ export default function TaskFlow() {
                     <p className="subtitle">Tüm görevleri başarıyla bitirdiniz, teşekkür ederiz.</p>
                     <div className="action-row" style={{ justifyContent: 'center' }}>
                         <button className="btn" onClick={handleFinish}>
-                            Tabloyu Görüntüle
+                            Ana Sayfaya Dön
                         </button>
                     </div>
                 </div>
